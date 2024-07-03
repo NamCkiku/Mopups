@@ -34,9 +34,6 @@ public static class AppHostBuilderExtensions
 #if IOS
                 handlers.AddHandler(typeof(PopupPage), typeof(Platforms.iOS.PopupPageHandler));
 #endif
-#if WINDOWS
-                handlers.AddHandler(typeof(PopupPage), typeof(Platforms.Windows.PopupPageHandler));
-#endif
             });
         return builder;
     }
@@ -68,9 +65,6 @@ public static class AppHostBuilderExtensions
 #endif
 #if IOS
                 handlers.AddHandler(typeof(PopupPage), typeof(Platforms.iOS.PopupPageHandler));
-#endif
-#if WINDOWS
-                handlers.AddHandler(typeof(PopupPage), typeof(Platforms.Windows.PopupPageHandler));
 #endif
             });
         return builder;

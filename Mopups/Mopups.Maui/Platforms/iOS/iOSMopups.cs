@@ -18,8 +18,6 @@ internal class iOSMopups : IPopupPlatform
     {
         page.Parent ??= Application.Current?.MainPage;
 
-        page.DescendantRemoved += HandleChildRemoved;
-
         var keyWindow = GetKeyWindow(UIApplication.SharedApplication);
         if (keyWindow?.WindowLevel == UIWindowLevel.Normal)
             keyWindow.WindowLevel = -1;
@@ -30,7 +28,10 @@ internal class iOSMopups : IPopupPlatform
 
         if (IsiOS13OrNewer)
         {
-            var connectedScene = UIApplication.SharedApplication.ConnectedScenes.ToArray().FirstOrDefault(x => x.ActivationState == UISceneActivationState.ForegroundActive);
+            var connectedScene = UIApplication.SharedApplication.ConnectedScenes.ToArray()
+                 .Where(scene => scene.Session.Role == UIWindowSceneSessionRole.Application)
+                 .FirstOrDefault(x => x.ActivationState == UISceneActivationState.ForegroundActive);
+
             if (connectedScene != null && connectedScene is UIWindowScene windowScene)
                 window = new PopupWindow(windowScene);
             else
@@ -65,6 +66,7 @@ internal class iOSMopups : IPopupPlatform
                 .ConnectedScenes
                 .ToArray()
                 .OfType<UIWindowScene>()
+                .Where(scene => scene.Session.Role == UIWindowSceneSessionRole.Application)
                 .SelectMany(scene => scene.Windows)
                 .FirstOrDefault(window => window.IsKeyWindow);
 
@@ -81,8 +83,6 @@ internal class iOSMopups : IPopupPlatform
         var viewController = handler?.ViewController;
 
         await Task.Delay(50);
-
-        page.DescendantRemoved -= HandleChildRemoved;
 
         if (handler != null && viewController != null && !viewController.IsBeingDismissed)
         {
@@ -134,11 +134,4 @@ internal class iOSMopups : IPopupPlatform
         (view?.Handler?.PlatformView as UIView)?.RemoveFromSuperview();
         (view?.Handler?.PlatformView as UIView)?.Dispose();
     }
-
-    private void HandleChildRemoved(object sender, ElementEventArgs e)
-    {
-        var view = e.Element;
-        DisposeModelAndChildrenHandlers((VisualElement)view);
-    }
-
 }
