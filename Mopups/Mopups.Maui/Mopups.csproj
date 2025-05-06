@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
 
-    <TargetFrameworks>net8.0;net8.0-ios;net8.0-android</TargetFrameworks>
+    <TargetFrameworks>net9.0;net9.0-ios;net9.0-android</TargetFrameworks>
     <!-- iOS, Android -->
     <UseMaui>true</UseMaui>
     <UseMauiEssentials>true</UseMauiEssentials>
@@ -12,51 +12,53 @@
     <PackageProjectUrl>https://github.com/LuckyDucko/Mopups</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
     
   </PropertyGroup>
   <PropertyGroup>
-    <InvariantGlobalization Condition="$(TargetFramework.Contains('-maccatalyst'))">true</InvariantGlobalization>
     <UseInterpreter Condition="$(TargetFramework.Contains('-android'))">False</UseInterpreter>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Authors>Tyson Hooker,Maksym Koshovyi,Aswin P G, Kirill Lyubimov, Martijn Van Dijk, Shane Neuville</Authors>
     <Company>$(CompanyName)</Company>
     <PackageTags>Mopups;Popups;Maui;rg;Xamarin;ios;android;Windows;MacOS;Mopups;Dialogs;macos;windows</PackageTags>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Title>Mopups (Maui Popups)</Title>
     <PackageReleaseNotes>
       Added in several fixes from the community (THANKYOU!)
 
-      Upgraded to .NET 8
+      Upgraded to .NET 9
     </PackageReleaseNotes>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishAot>True</PublishAot>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
     <EnableSGenConc>True</EnableSGenConc>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
     <EnableSGenConc>True</EnableSGenConc>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
     <AndroidLinkTool>r8</AndroidLinkTool>
     <RunAOTCompilation>True</RunAOTCompilation>
     <EnableLLVM>True</EnableLLVM>
     <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
     <RunAOTCompilation>True</RunAOTCompilation>
     <EnableLLVM>True</EnableLLVM>
     <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AsyncAwaitBestPractices" Version="7.0.0" />
+    <PackageReference Include="AsyncAwaitBestPractices" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Essentials" Version="8.0.61" />
+    <PackageReference Update="Microsoft.Maui.Essentials" Version="9.0.60" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.60" />
   </ItemGroup>
 </Project>
