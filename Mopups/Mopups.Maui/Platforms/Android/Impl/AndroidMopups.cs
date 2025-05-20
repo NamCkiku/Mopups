@@ -4,6 +4,7 @@ using AndroidX.Activity;
 using AndroidX.Fragment.App;
 using AsyncAwaitBestPractices;
 using Microsoft.Maui.Platform;
+using Mopups.Extensions;
 using Mopups.Interfaces;
 using Mopups.Pages;
 using Mopups.Services;
@@ -12,6 +13,7 @@ namespace Mopups.Droid.Implementation;
 
 public class AndroidMopups : IPopupPlatform
 {
+    private static IList<FrameLayout?> DecoreViews => GetAllFragmentDecorViews();
     private static FrameLayout? DecoreView => GetTopFragmentDecorView();
 
     public static bool SendBackPressed(Action? backPressedHandler = null)
@@ -44,7 +46,7 @@ public class AndroidMopups : IPopupPlatform
         var mainPage = (Element)MauiApplication.Current.Application.Windows[0].Content;
         mainPage.AddLogicalChild(page);
 
-        var handler = page.Handler ??= new PopupPageHandler(page.Parent.Handler.MauiContext);
+        var handler = page.Handler ??= new PopupPageHandler(page.Parent.FindMauiContext());
 
         var androidNativeView = handler.PlatformView as Android.Views.View;
         DecoreView?.AddView(androidNativeView);
@@ -60,7 +62,10 @@ public class AndroidMopups : IPopupPlatform
         {
             HandleAccessibility(false, page.DisableAndroidAccessibilityHandling, page);
 
-            DecoreView?.RemoveView(renderer.PlatformView as Android.Views.View);
+            foreach (var decoreView in DecoreViews)
+            {
+                decoreView?.RemoveView(renderer.PlatformView as Android.Views.View);
+            }
             renderer.DisconnectHandler(); //?? no clue if works
             page.Parent?.RemoveLogicalChild(page);
 
@@ -195,5 +200,35 @@ public class AndroidMopups : IPopupPlatform
         }
 
         return topFragment.Activity?.Window?.DecorView as FrameLayout;
+    }
+
+    static IList<FrameLayout?> GetAllFragmentDecorViews()
+    {
+        IList<FrameLayout?> decoreViews = new List<FrameLayout?>();
+        if (Platform.CurrentActivity is not ComponentActivity componentActivity)
+        {
+            return decoreViews;
+        }
+
+        var fragments = componentActivity.GetFragmentManager()?.Fragments;
+
+        if (fragments is null || !fragments.Any())
+        {
+            decoreViews.Add(Platform.CurrentActivity?.Window?.DecorView as FrameLayout);
+            return decoreViews;
+        }
+
+        foreach (var fragment in fragments)
+        {
+            if (fragment is DialogFragment dialogFragment)
+            {
+                decoreViews.Add(dialogFragment.Dialog?.Window?.DecorView as FrameLayout);
+                continue;
+            }
+
+            decoreViews.Add(fragment.Activity?.Window?.DecorView as FrameLayout);
+        }
+
+        return decoreViews;
     }
 }
